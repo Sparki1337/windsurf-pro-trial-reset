@@ -9,7 +9,9 @@
 
 ### Description
 
-**Windsurf Reset Tool** is a free GUI application that allows you to reset device identifiers for Windsurf IDE (and Windsurf Next Insiders version). The tool generates new device IDs and creates automatic backups of your configuration files.
+**Windsurf Reset Tool** is a free cross-platform GUI application that allows you to reset device identifiers for Windsurf IDE (and Windsurf Next Insiders version). The tool generates new device IDs and creates automatic backups of your configuration files.
+
+**Supported Platforms**: Windows, macOS, Linux
 
 ### ✨ Features
 
@@ -18,7 +20,7 @@
 - 🌍 **Multilingual**: Full support for English and Russian
 - 🚀 **Version Support**: Works with both Windsurf (Stable) and Windsurf Next (Insiders)
 - 👁️ **View Configuration**: View current device identifiers
-- 🖥️ **Platform Support**: Currently supports **Windows only** (macOS and Linux support coming soon)
+- 🖥️ **Cross-Platform**: Full support for **Windows**, **macOS**, and **Linux**
 
 ### 🎯 Use Cases
 
@@ -29,11 +31,9 @@
 
 ### 📋 Requirements
 
-- **Windows** (Windows 10 or 11)
+- **Operating System**: Windows 10/11, macOS 10.14+, or Linux (Ubuntu 20.04+, Debian 10+, Fedora 32+, etc.)
 - Python 3.8+
 - PyQt6 6.6.0+
-
-> **Note**: macOS and Linux support is planned for future releases.
 
 ### 🚀 Installation
 
@@ -86,17 +86,19 @@ The executable will be created in the `build/` directory.
 
 ### 📂 Configuration Locations
 
-**Windows (Currently Supported):**
+**Windows:**
 - Stable: `%APPDATA%\Windsurf\User\globalStorage\storage.json`
 - Next: `%APPDATA%\Windsurf - Next\User\globalStorage\storage.json`
 
-**macOS (Coming Soon):**
+**macOS:**
 - Stable: `~/Library/Application Support/Windsurf/User/globalStorage/storage.json`
 - Next: `~/Library/Application Support/Windsurf - Next/User/globalStorage/storage.json`
 
-**Linux (Coming Soon):**
+**Linux:**
 - Stable: `~/.config/Windsurf/User/globalStorage/storage.json`
 - Next: `~/.config/Windsurf - Next/User/globalStorage/storage.json`
+
+> The application automatically detects your operating system and uses the correct path.
 
 ### 🛠️ Technical Details
 
@@ -132,7 +134,9 @@ If you found this tool helpful, please give it a ⭐ on GitHub!
 
 ### Описание
 
-**Windsurf Reset Tool** — это бесплатное приложение с графическим интерфейсом, позволяющее сбрасывать идентификаторы устройства для Windsurf IDE (и инсайдерской версии Windsurf Next). Инструмент генерирует новые ID устройства и создаёт автоматические резервные копии конфигурационных файлов.
+**Windsurf Reset Tool** — это бесплатное кросс-платформенное приложение с графическим интерфейсом, позволяющее сбрасывать идентификаторы устройства для Windsurf IDE (и инсайдерской версии Windsurf Next). Инструмент генерирует новые ID устройства и создаёт автоматические резервные копии конфигурационных файлов.
+
+**Поддерживаемые платформы**: Windows, macOS, Linux
 
 ### ✨ Возможности
 
@@ -141,7 +145,7 @@ If you found this tool helpful, please give it a ⭐ on GitHub!
 - 🌍 **Многоязычность**: Полная поддержка английского и русского языков
 - 🚀 **Поддержка версий**: Работает как с Windsurf (стабильная), так и с Windsurf Next (инсайдерская)
 - 👁️ **Просмотр конфигурации**: Просмотр текущих идентификаторов устройства
-- 🖥️ **Поддержка платформ**: В данный момент поддерживается только **Windows** (поддержка macOS и Linux скоро будет добавлена)
+- 🖥️ **Кросс-платформенность**: Полная поддержка **Windows**, **macOS** и **Linux**
 
 ### 🎯 Варианты использования
 
@@ -152,11 +156,9 @@ If you found this tool helpful, please give it a ⭐ on GitHub!
 
 ### 📋 Требования
 
-- **Windows** (рекомендуется Windows 10 или 11)
+- **Операционная система**: Windows 10/11, macOS 10.14+, или Linux (Ubuntu 20.04+, Debian 10+, Fedora 32+, и т.д.)
 - Python 3.8+
 - PyQt6 6.6.0+
-
-> **Примечание**: Поддержка macOS и Linux планируется в будущих версиях.
 
 ### 🚀 Установка
 
@@ -209,9 +211,19 @@ python build_onefile.py
 
 ### 📂 Расположение конфигурации
 
-**Windows (В данный момент поддерживается):**
+**Windows:**
 - Стабильная: `%APPDATA%\Windsurf\User\globalStorage\storage.json`
 - Next: `%APPDATA%\Windsurf - Next\User\globalStorage\storage.json`
+
+**macOS:**
+- Стабильная: `~/Library/Application Support/Windsurf/User/globalStorage/storage.json`
+- Next: `~/Library/Application Support/Windsurf - Next/User/globalStorage/storage.json`
+
+**Linux:**
+- Стабильная: `~/.config/Windsurf/User/globalStorage/storage.json`
+- Next: `~/.config/Windsurf - Next/User/globalStorage/storage.json`
+
+> Приложение автоматически определяет вашу операционную систему и использует правильный путь.
 
 ### 🛠️ Технические детали
 

@@ -21,7 +21,7 @@ from PyQt6.QtGui import QFont, QPalette, QColor, QIcon, QPainter, QLinearGradien
 LANGUAGES = {
     "en": {
         "title": "Windsurf Reset Tool",
-        "version": "v1.3 (FULL FREE APP)",
+        "version": "v1.4 (FULL FREE APP)",
         "select_language": "Select Language:",
         "reset_button": "Reset Device IDs",
         "view_button": "View Configuration",
@@ -47,7 +47,7 @@ LANGUAGES = {
         "generating_ids": "Generating new identifiers...",
         "saving_config": "Saving configuration...",
         "complete": "Complete!",
-        "about_text": "Windsurf Reset Tool v1.3\n\nThis tool resets Windsurf device identifiers and creates backups of your configuration.\n\nCreated by: Sparki (@gde_ryzen), for bugs: sparkiabuz1@gmail.com \n\n© 2025",
+        "about_text": "Windsurf Reset Tool v1.4\n\nThis tool resets Windsurf device identifiers and creates backups of your configuration.\n\nSupports: Windows, macOS, Linux\n\nCreated by: Sparki (@gde_ryzen), for bugs: sparkiabuz1@gmail.com \n\n© 2025",
         "status_ready": "Ready",
         "unsupported_os": "Unsupported OS: {0}",
         "base_dir_missing": "Base directory does not exist: {0}",
@@ -63,7 +63,7 @@ LANGUAGES = {
     },
     "ru": {
         "title": "Инструмент Сброса Windsurf",
-        "version": "v1.3 (FULL FREE APP)",
+        "version": "v1.4 (FULL FREE APP)",
         "select_language": "Выбор языка:",
         "reset_button": "Сбросить ID устройства",
         "view_button": "Просмотреть конфигурацию",
@@ -89,7 +89,7 @@ LANGUAGES = {
         "generating_ids": "Генерация новых идентификаторов...",
         "saving_config": "Сохранение конфигурации...",
         "complete": "Завершено!",
-        "about_text": "Инструмент Сброса Windsurf v1.3\n\nЭтот инструмент сбрасывает идентификаторы устройства Windsurf и создаёт резервные копии конфигурации.\n\nСоздал: Sparki (@gde_ryzen), по ошибкам: sparkiabuz1@gmail.com \n\n© 2025",
+        "about_text": "Инструмент Сброса Windsurf v1.4\n\nЭтот инструмент сбрасывает идентификаторы устройства Windsurf и создаёт резервные копии конфигурации.\n\nПоддерживаемые ОС: Windows, macOS, Linux\n\nСоздал: Sparki (@gde_ryzen), по ошибкам: sparkiabuz1@gmail.com \n\n© 2025",
         "status_ready": "Готов",
         "unsupported_os": "Неподдерживаемая ОС: {0}",
         "base_dir_missing": "Базовая директория не найдена: {0}",
@@ -416,7 +416,9 @@ class WindsurfResetGUI(QMainWindow):
         main_layout.addWidget(self.progress_bar)
         
         # Status bar
-        self.status_label = QLabel(f"🟢 {self.t('status_ready')}")
+        system_name = platform.system()
+        system_display = {"Windows": "Windows", "Darwin": "macOS", "Linux": "Linux"}.get(system_name, system_name)
+        self.status_label = QLabel(f"🟢 {self.t('status_ready')} | 🖥️ {system_display}")
         self.status_label.setFont(QFont("Segoe UI", 10, QFont.Weight.Bold))
         self.status_label.setStyleSheet("color: #21c0ae; padding: 5px;")
         main_layout.addWidget(self.status_label)
@@ -739,7 +741,11 @@ class WindsurfResetGUI(QMainWindow):
         self.view_btn.setText(f"👁️ {self.t('view_button')}")
         self.about_btn.setText(f"ℹ️ {self.t('about_button')}")
         self.exit_btn.setText(f"🚪 {self.t('exit_button')}")
-        self.status_label.setText(f"🟢 {self.t('status_ready')}")
+        
+        # Update status with system info
+        system_name = platform.system()
+        system_display = {"Windows": "Windows", "Darwin": "macOS", "Linux": "Linux"}.get(system_name, system_name)
+        self.status_label.setText(f"🟢 {self.t('status_ready')} | 🖥️ {system_display}")
         
         # Update display text if it shows ready status (use localized keyword)
         if self.t('status_ready') in self.display_text.toPlainText():
@@ -814,8 +820,11 @@ class WindsurfResetGUI(QMainWindow):
         self.progress_bar.setVisible(False)
         self.set_buttons_enabled(True)
         
+        system_name = platform.system()
+        system_display = {"Windows": "Windows", "Darwin": "macOS", "Linux": "Linux"}.get(system_name, system_name)
+        
         if success:
-            self.status_label.setText(f"✅ {self.t('complete')}")
+            self.status_label.setText(f"✅ {self.t('complete')} | 🖥️ {system_display}")
             
             # Display new IDs
             display_text = f"✅ {self.t('reset_success')}\n\n"
@@ -840,7 +849,7 @@ class WindsurfResetGUI(QMainWindow):
                 self.t('reinstall_hint')
             )
         else:
-            self.status_label.setText(f"❌ {self.t('error')}")
+            self.status_label.setText(f"❌ {self.t('error')} | 🖥️ {system_display}")
             self.display_text.setText(f"❌ Error:\n{message}")
             
             QMessageBox.critical(
@@ -851,6 +860,9 @@ class WindsurfResetGUI(QMainWindow):
             
     def view_config(self):
         """View current configuration."""
+        system_name = platform.system()
+        system_display = {"Windows": "Windows", "Darwin": "macOS", "Linux": "Linux"}.get(system_name, system_name)
+        
         try:
             storage_file = self.get_storage_file()
             
@@ -876,12 +888,12 @@ class WindsurfResetGUI(QMainWindow):
                 display_text += f"{key}:\n  {value}\n\n"
                 
             self.display_text.setText(display_text)
-            self.status_label.setText(f"✅ {self.t('complete')}")
+            self.status_label.setText(f"✅ {self.t('complete')} | 🖥️ {system_display}")
             
         except Exception as e:
             error_msg = f"❌ {self.t('error')}: {str(e)}"
             self.display_text.setText(error_msg)
-            self.status_label.setText(f"❌ {self.t('error')}")
+            self.status_label.setText(f"❌ {self.t('error')} | 🖥️ {system_display}")
             
             QMessageBox.critical(
                 self,
