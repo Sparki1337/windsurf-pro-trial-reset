@@ -1,4 +1,4 @@
-# 🔧 Windsurf Reset Tool
+# 🔧 Windsurf Reset Tool (НЕ АКТУАЛЬНО!!!)
 
 [English](#english) | [Русский](#russian)
 
