@@ -4,6 +4,7 @@ import shutil
 import uuid
 import platform
 import sys
+import winreg
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, Optional
@@ -21,9 +22,9 @@ from PyQt6.QtGui import QFont, QPalette, QColor, QIcon, QPainter, QLinearGradien
 LANGUAGES = {
     "en": {
         "title": "Windsurf Reset Tool",
-        "version": "v1.4 (FULL FREE APP)",
+        "version": "v1.5 (FULL FREE APP)",
         "select_language": "Select Language:",
-        "reset_button": "Reset Device IDs",
+        "reset_button": "Reset Device IDs & Registry",
         "view_button": "View Configuration",
         "about_button": "About",
         "exit_button": "Exit",
@@ -31,7 +32,7 @@ LANGUAGES = {
         "new_ids": "New Device Identifiers",
         "backup_title": "Backup Configuration",
         "backup_prompt": "Would you like to create a backup before resetting?",
-        "reset_confirm": "Are you sure you want to reset the device identifiers?",
+        "reset_confirm": "Are you sure you want to reset the device identifiers and Windows MachineGuid?",
         "yes": "Yes",
         "no": "No",
         "cancel": "Cancel",
@@ -40,14 +41,14 @@ LANGUAGES = {
         "warning": "Warning",
         "info": "Information",
         "backup_created": "Backup created successfully:",
-        "reset_success": "Device identifiers have been successfully reset! 🎉",
+        "reset_success": "Device identifiers and Windows MachineGuid have been successfully reset! 🎉",
         "no_config": "Configuration file not found.",
         "creating_backup": "Creating backup...",
         "loading_config": "Loading configuration...",
-        "generating_ids": "Generating new identifiers...",
+        "generating_ids": "Generating new identifiers and updating registry...",
         "saving_config": "Saving configuration...",
         "complete": "Complete!",
-        "about_text": "Windsurf Reset Tool v1.4\n\nThis tool resets Windsurf device identifiers and creates backups of your configuration.\n\nSupports: Windows, macOS, Linux\n\nCreated by: Sparki (@gde_ryzen), for bugs: sparkiabuz1@gmail.com \n\n© 2025",
+        "about_text": "Windsurf Reset Tool v1.5\n\nThis tool resets Windsurf device identifiers and creates backups of your configuration.\n\nSupports: Windows, macOS, Linux\n\nCreated by: Sparki (@gde_ryzen), for bugs: sparkiabuz1@gmail.com \n\n© 2025",
         "status_ready": "Ready",
         "unsupported_os": "Unsupported OS: {0}",
         "base_dir_missing": "Base directory does not exist: {0}",
@@ -60,12 +61,14 @@ LANGUAGES = {
         "version_stable": "Windsurf (Stable)",
         "version_next": "Windsurf Next (Insiders)",
         "reinstall_hint": "If you experience errors in Windsurf, or your account gets logged out, it's recommended to reinstall Windsurf.",
+        "registry_unavailable": "Not available on your system. This method works only on Windows.",
+        "reset_success_no_registry": "Device identifiers have been successfully reset! 🎉\n⚠️ Warning: MachineGuid was not reset (requires administrator rights).",
     },
     "ru": {
         "title": "Инструмент Сброса Windsurf",
-        "version": "v1.4 (FULL FREE APP)",
+        "version": "v1.5 (FULL FREE APP)",
         "select_language": "Выбор языка:",
-        "reset_button": "Сбросить ID устройства",
+        "reset_button": "Сбросить ID устройства и реестр",
         "view_button": "Просмотреть конфигурацию",
         "about_button": "О программе",
         "exit_button": "Выход",
@@ -73,7 +76,7 @@ LANGUAGES = {
         "new_ids": "Новые Идентификаторы Устройства",
         "backup_title": "Резервная копия конфигурации",
         "backup_prompt": "Хотите создать резервную копию перед сбросом?",
-        "reset_confirm": "Вы уверены, что хотите сбросить идентификаторы устройства?",
+        "reset_confirm": "Вы уверены, что хотите сбросить идентификаторы устройства и Windows MachineGuid?",
         "yes": "Да",
         "no": "Нет",
         "cancel": "Отмена",
@@ -82,14 +85,14 @@ LANGUAGES = {
         "warning": "Предупреждение",
         "info": "Информация",
         "backup_created": "Резервная копия успешно создана:",
-        "reset_success": "Идентификаторы устройства успешно сброшены! 🎉",
+        "reset_success": "Идентификаторы устройства и Windows MachineGuid успешно сброшены! 🎉",
         "no_config": "Файл конфигурации не найден.",
         "creating_backup": "Создание резервной копии...",
         "loading_config": "Загрузка конфигурации...",
-        "generating_ids": "Генерация новых идентификаторов...",
+        "generating_ids": "Генерация новых идентификаторов и обновление реестра...",
         "saving_config": "Сохранение конфигурации...",
         "complete": "Завершено!",
-        "about_text": "Инструмент Сброса Windsurf v1.4\n\nЭтот инструмент сбрасывает идентификаторы устройства Windsurf и создаёт резервные копии конфигурации.\n\nПоддерживаемые ОС: Windows, macOS, Linux\n\nСоздал: Sparki (@gde_ryzen), по ошибкам: sparkiabuz1@gmail.com \n\n© 2025",
+        "about_text": "Инструмент Сброса Windsurf v1.5\n\nЭтот инструмент сбрасывает идентификаторы устройства Windsurf и создаёт резервные копии конфигурации.\n\nПоддерживаемые ОС: Windows, macOS, Linux\n\nСоздал: Sparki (@gde_ryzen), по ошибкам: sparkiabuz1@gmail.com \n\n© 2025",
         "status_ready": "Готов",
         "unsupported_os": "Неподдерживаемая ОС: {0}",
         "base_dir_missing": "Базовая директория не найдена: {0}",
@@ -101,7 +104,9 @@ LANGUAGES = {
         "select_version": "Выбор версии Windsurf:",
         "version_stable": "Windsurf (Стабильная)",
         "version_next": "Windsurf Next (Инсайдерская)",
-        "reinstall_hint": "Если в Windsurf возникают ошибки или слетает аккаунт, рекомендуется переустановить Windsurf."
+        "reinstall_hint": "Если в Windsurf возникают ошибки или слетает аккаунт, рекомендуется переустановить Windsurf.",
+        "registry_unavailable": "Недоступно на вашей системе. Этот метод работает только на Windows.",
+        "reset_success_no_registry": "Идентификаторы устройства успешно сброшены! 🎉\n⚠️ Внимание: MachineGuid не был сброшен (требуются права администратора)."
     },
 }
 
@@ -347,12 +352,44 @@ class ResetWorker(QThread):
         return None
         
     def generate_device_ids(self) -> Dict[str, str]:
-        """Generate new device IDs."""
-        return {
+        """Generate new device IDs and update Windows registry."""
+        new_ids = {
             "telemetry.machineId": os.urandom(32).hex(),
             "telemetry.macMachineId": os.urandom(32).hex(),
             "telemetry.devDeviceId": str(uuid.uuid4()),
         }
+        
+        # Update Windows MachineGuid in registry (Windows only)
+        if platform.system() == "Windows":
+            try:
+                new_machine_guid = str(uuid.uuid4())
+                key_path = r"SOFTWARE\Microsoft\Cryptography"
+                
+                # Open registry key with write access
+                key = winreg.OpenKey(
+                    winreg.HKEY_LOCAL_MACHINE,
+                    key_path,
+                    0,
+                    winreg.KEY_SET_VALUE | winreg.KEY_WOW64_64KEY
+                )
+                
+                # Set new MachineGuid value
+                winreg.SetValueEx(key, "MachineGuid", 0, winreg.REG_SZ, new_machine_guid)
+                winreg.CloseKey(key)
+                
+                # Store in result for display
+                new_ids["registry.MachineGuid"] = new_machine_guid
+                
+            except PermissionError:
+                # If no admin rights, continue without registry update
+                new_ids["registry.MachineGuid"] = "⚠️ Admin rights required"
+            except Exception as e:
+                new_ids["registry.MachineGuid"] = f"❌ Error: {str(e)}"
+        else:
+            # Not Windows - show unavailable message
+            new_ids["registry.MachineGuid"] = self.t_local('registry_unavailable')
+        
+        return new_ids
 
 
 class WindsurfResetGUI(QMainWindow):
@@ -826,8 +863,12 @@ class WindsurfResetGUI(QMainWindow):
         if success:
             self.status_label.setText(f"✅ {self.t('complete')} | 🖥️ {system_display}")
             
+            # Check if MachineGuid was not reset due to admin rights
+            registry_failed = new_ids.get("registry.MachineGuid", "").startswith("⚠️ Admin")
+            
             # Display new IDs
-            display_text = f"✅ {self.t('reset_success')}\n\n"
+            success_message = self.t('reset_success_no_registry') if registry_failed else self.t('reset_success')
+            display_text = f"✅ {success_message}\n\n"
             if message:
                 display_text += message
             
@@ -841,7 +882,7 @@ class WindsurfResetGUI(QMainWindow):
             QMessageBox.information(
                 self,
                 self.t('success'),
-                self.t('reset_success')
+                success_message
             )
             QMessageBox.information(
                 self,
