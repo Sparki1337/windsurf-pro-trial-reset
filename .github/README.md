@@ -1,4 +1,4 @@
-# 🔧 Windsurf Reset Tool
+# 🔧 Windsurf Reset Tool (Works on versions 1.12.28) (Работает на версии 1.12.28)
 
 [English](#english) | [Русский](#russian)
 
